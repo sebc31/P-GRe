@@ -34,3 +34,6 @@ Requirements and input
 
 - If a proteome file is provided, it must be in FASTA or multi-FASTA format. For now, each protein present in this file **must** have its correspondence on the annotation file in GFF format. Conversely, each gene in the GFF format annotation file **must** have a correspondence in the proteome file.
 
+How P-GRe works
+===============
+![pgre-main-a\[fig1\]](docs/figs/figure_article.png)
