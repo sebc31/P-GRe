@@ -36,4 +36,19 @@ Requirements and input
 
 How P-GRe works
 ===============
-<img ![pgre-main-a\[fig1\]](docs/figs/figure_article.jpg)>
+<p align="center"><img src="docs/figs/figure_article.jpg" width="50%" height="50%"></p>
+P-GRe works in two main stages, themselves divided into several sub-stages. The first main step is the search for the position of pseudogenes on the genome, and the second main step is the refinement of the structure of the pseudogenes found.
+
+## Finding the pseudogenes
+(See the numbered sub-steps on gray background on the top figure) The search for pseudogenes is carried out in four sub-steps:
+
+- **[1]** Gene annotation and genome files are used to generate the proteome file. Alternatively, a proteome file can be provided to P-GRe.
+- **[2]** Gene positions are used to hard-mask gene loci on the genome.
+- **[3]** All protein sequences are aligned locally to the genome. Because the original loci of the protein-coding genes are masked, the proteins will be aligned to areas of the genome with similarity to the original coding gene. It is assumed that the areas of similarity thus found are potential pseudogenes derived from the coding genes, called "parent genes" in the literature.
+- **[4]** The results of local alignments are filtered according to several criteria, in particular the percentage of homology between a potential pseudogene and the sequence of the aligned protein. Close hits obtained from alignments of the same sequence are merged together.
+
+## Finding the structure of pseudogenes
+(See the numbered sub-steps on black background on the top figure) Pseudogene structure inference is divided into three substeps:
+
+- **[1]** Hits that overlap, and whose overlap length is not divisible by 3, are considered frame-shift markers, because this can show that two parts of a protein sequence encoded by the same CDS are aligned in different reading frames. The presice position of the frame-shift is found by a so-called “chimera” approach. More information on this approach can be found [here](docs/figs/chimeras.md).
+.
