@@ -36,4 +36,4 @@ Requirements and input
 
 How P-GRe works
 ===============
-![pgre-main-a\[fig1\]](docs/figs/figure_article.png)
+<img ![pgre-main-a\[fig1\]](docs/figs/figure_article.jpg)>
