@@ -54,3 +54,14 @@ P-GRe works in two main stages, themselves divided into several sub-stages. The 
 - **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci 
 (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process.
 - **[3]** The ends of the pseudogenes are refined by searching for a start codon and a stop codon. For start codons, P-GRe accepts "degenerate" start codons (*i.e.* which have a single substitution) provided that they are at a precise position upstream of the pseudogene. This position is determined from the alignment between the amino acid sequences encoded by the pseudogene and its parent gene.
+
+Installation
+============
+
+At the time of P-GRe testing, these software/dependencies versions were used:
+
+- GFFRead 0.12.7
+- BEDTools 2.30.0
+- NCBI BLAST+ 2.13.0+
+- BioPython 1.81
+- EMBOSS:6.6.0.0
