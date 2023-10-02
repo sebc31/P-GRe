@@ -61,11 +61,15 @@ Installation
 At the time of P-GRe testing, these software/dependencies versions were used:
 
 - GFFRead 0.12.7
+<br>
 
 - BEDTools 2.30.0
+<br>
 
 - NCBI BLAST+ 2.13.0+
+<br>
 
 - BioPython 1.81
+<br>
 
 - EMBOSS:6.6.0.0
