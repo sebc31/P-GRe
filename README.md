@@ -1,4 +1,5 @@
 # P-GRe v.0
+
 Contacts and authors
 ====================
 Sébastien Cabanac, PhD student, sebastien.cabanac@univ-tlse3.fr
@@ -18,6 +19,7 @@ Contents
 
 - [Contacts and authors](#contacts-and-authors)
 - [Funding and acknowledgements](#funding-and-acknowledgements)
+- [About P-GRe](#about-p-gre)
 
 About P-GRe
 ===========
@@ -111,7 +113,7 @@ sudo pip3 install biopython
 <br>
 
 ### EMBOSS:6.6.0.0
-[EMBOSS](https://emboss.sourceforge.net/) tool suite can be downloaded from [this]( ftp://emboss.open-bio.org/pub/EMBOSS/) FTP server. Once downloaded you will need to compile with `make`:
+[EMBOSS](https://emboss.sourceforge.net/) tool suite can be downloaded from EMBOSS FTP server (ftp://emboss.open-bio.org/pub/EMBOSS/). Once downloaded you will need to compile with `make`:
 ```
 wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
 tar -xvf EMBOSS-6.6.0.tar.gz
@@ -121,5 +123,67 @@ make
 ```
 Binary files will be located in the `emboss` folder. This folder contains a lot of binary files, but only `stretcher` is used by P-GRe.
 
-### Other
-P-GRe requires a Linux-system and a Python3 installation. It is known to work with CentOs 7 distribution and Python 3.10.0 and 3.6.3 versions.
+### Other important informations
+P-GRe requires a Linux-system and a Python3 installation. It is known to work with CentOs 7 distribution and Python versions 3.10.0 and 3.6.3. It is currently not possible to specify the path to the binary files. **It is therefore essential to put these different files in the `bin` subfolder of the P-GRe installation folder**. This folder should contains at last the following binary files:
+```
+bedtools
+blastp
+gffread
+makeblastdb
+tblastn
+```
+
+Running P-GRe
+=============
+P-GRe must be used from the command line. We encourage you to consult the user manual integrated into the software, which can be consulted with the command `./P-GRe_pipeline.sh -h`.
+<p align="center"><img src="docs/figs/manual.jpg" width="100%" height="100%"></p>
+The most basic command to launch P-GRe would be:
+
+```
+./P-GRe_pipeline.sh -f /path/to/genome/fasta_file -g /path/to/annotation/gff3_file
+```
+
+## Command line
+
+### Mandatory arguments
+
+`-f` String
+
+Path to the genome file, in FASTA or multi-FASTA format.
+
+`-g` String
+
+Path to the annotation file, in GFF3 format.
+
+### Optional arguments
+
+`-o` String
+
+Output directory. If none is given, the results will be written in the FASTA file folder, in a subfolder named `PGRE_` followed by the date in format day_month_year_hour_min_sec.
+
+`-p` String
+
+Path to the proteome file. If this argument is given, P-GRe skips the step of generating the protein sequence file. :warning: HIGHLY RECOMMENDED.
+
+`-b` String
+
+Path to previous BLAST results. Should only be used to allows P-GRe analysis to be resumed from the end of local alignments in case of a crash.
+
+`-d` String
+
+Path to the directory containing the `P-GRe_pipeline.sh` script. This option may be necessary for running P-GRe on a cluster.
+
+`-t` Interger
+
+Number of threads to use for the local alignements step.
+
+`-v` Boolean
+
+Enable verbose mode.
+
+`-h` Boolean
+
+Displays P-GRe manual.
+
+Output
+======
