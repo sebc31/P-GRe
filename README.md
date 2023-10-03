@@ -69,9 +69,8 @@ Installation
 
 At the time of P-GRe testing, these software/dependencies versions were used:
 
-### GFFRead 0.12.7<sup name="a6">[R6](#f6)</sup>
-
-[GFFRead](https://github.com/gpertea/gffread) can be downloaded from [here](https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz) and installed with `make`:
+### GFFRead 0.12.7
+[GFFRead](https://github.com/gpertea/gffread)<sup name="a6">[R6](#f6)</sup> can be downloaded from [here](https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz) and installed with `make`:
 ```
 wget https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz
 tar xzf gffread-0.12.7.Linux_x86_64.tar.gz
@@ -80,9 +79,9 @@ make
 ```
 <br>
 
-### BEDTools 2.30.0<sup name="a7">[R7](#f7)</sup>
+### BEDTools 2.30.0
 
-A precompiled version of [BEDTools](https://bedtools.readthedocs.io/en/latest/) binary can be downloaded from [here](https://github.com/arq5x/bedtools2/releases). Additionally, you should rename the binary file to simply "bedtools" so that P-GRe can work properly:
+A precompiled version of [BEDTools](https://bedtools.readthedocs.io/en/latest/)<sup name="a7">[R7](#f7)</sup> binary can be downloaded from [here](https://github.com/arq5x/bedtools2/releases). Additionally, you should rename the binary file to simply "bedtools" so that P-GRe can work properly:
 ```
 wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
 mv bedtools.static.binary bedtools
@@ -96,9 +95,9 @@ make
 ```
 <br>
 
-### NCBI BLAST+ 2.13.0+<sup name="a8">[R8](#f8)</sup>
+### NCBI BLAST+ 2.13.0+
 
-[NCBI BLAST+](https://www.ncbi.nlm.nih.gov/books/NBK279690/) latest version can be installed with:
+[NCBI BLAST+](https://www.ncbi.nlm.nih.gov/books/NBK279690/)<sup name="a8">[R8](#f8)</sup> latest version can be installed with:
 ```
 sudo apt-get install ncbi-blast+
 ```
@@ -109,8 +108,8 @@ tar -xvf ncbi-blast-2.13.0+-x64-linux.tar.gz
 ```
 <br>
 
-### BioPython 1.81<sup name="a9">[R9](#f9)</sup>
-To install [BioPython](https://biopython.org/), you first need to install Python3 package manager with:
+### BioPython 1.81
+To install [BioPython](https://biopython.org/)<sup name="a9">[R9](#f9)</sup>, you first need to install Python3 package manager with:
 ```
 sudo apt-get install python3-pip
 ```
@@ -120,8 +119,8 @@ sudo pip3 install biopython
 ```
 <br>
 
-### EMBOSS:6.6.0.0<sup name="a10">[R10](#f10)</sup>
-[EMBOSS](https://emboss.sourceforge.net/) tool suite can be downloaded from EMBOSS FTP server (ftp://emboss.open-bio.org/pub/EMBOSS/). Once downloaded you will need to compile with `make`:
+### EMBOSS:6.6.0.0
+[EMBOSS](https://emboss.sourceforge.net/)<sup name="a10">[R10](#f10)</sup> tool suite can be downloaded from EMBOSS FTP server (ftp://emboss.open-bio.org/pub/EMBOSS/). Once downloaded you will need to compile with `make`:
 ```
 wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
 tar -xvf EMBOSS-6.6.0.tar.gz
