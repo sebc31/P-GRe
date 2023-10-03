@@ -20,6 +20,13 @@ Contents
 - [Contacts and authors](#contacts-and-authors)
 - [Funding and acknowledgements](#funding-and-acknowledgements)
 - [About P-GRe](#about-p-gre)
+- [Requirments and input](#requirments-and-input)
+- [How P-GRe works](#how-p-gre-works)
+- [Installation](#installation)
+- [Running P-GRe](#running-p-gre)
+- [Common problems](#common-problems)
+- [Licence](#licence)
+- [References](#references)
 
 About P-GRe
 ===========
@@ -185,5 +192,4 @@ Enable verbose mode.
 
 Displays P-GRe manual.
 
-Output
-======
+## Output
