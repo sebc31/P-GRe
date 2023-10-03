@@ -193,3 +193,10 @@ Enable verbose mode.
 Displays P-GRe manual.
 
 ## Output
+
+The output folder generated automatically or specified via the `-o` option is divided into four subfolders:
+
+- `data` contains a copy of the files provided by the user, from which P-GRe will start its operations.
+- `tmp` contains all the working files produced by the different operations and the different software used by P-GRe.
+- `log` contains all the files (standard output and standard error) of the different software used by P-GRe. Similar files are generated for each of the P-GRe steps.
+- `res` contains the results files, including the coding sequences of the pseudogenes (`pseudogenes.cds.fna`), their genomic sequences(`pseudogenes.genomic.fna`), their corresponding virtually encoded peptides (`pseudogenes.protein.faa`) and the position of the pseudogenes and their structures on the genome (`pseudogenes.gff`, example below). It also contains a `true_gene.id` file containing the id of pseudogenes with no trace of pseudogeneisation.
