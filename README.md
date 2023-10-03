@@ -31,7 +31,7 @@ Contents
 
 About P-GRe
 ===========
-Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. No longer coding for a functional protein, pseudogenes are rarely transcribed and are often described as having no function. It is now known that part of the pseudogenes are transcribed, this part representing for example 15% of all the pseudogenes in mice<sup name="a1">[R1](#f1)</sup>. It has also been shown that these transcripts, originating from pseudogenes, could form duplexes with the mRNAs of homologous functional genes and thus participate in post-transcriptional regulation through the RNAi pathway (Tam et al., 2008; Watanabe et al., 2008; Guo et al., 2009). In the other hand, the exhaustive prediction of pseudogenes allow a better understanding of dynamic of gene evolution in multigenenic families often subjected to duplication and pseudogenisation events.
+Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. No longer coding for a functional protein, pseudogenes are rarely transcribed and are often described as having no function. It is now known that part of the pseudogenes are transcribed, this part representing for example 15% of all the pseudogenes in mice<sup name="a1">[R1](#f1)</sup>. It has also been shown that these transcripts, originating from pseudogenes, could form duplexes with the mRNAs of homologous functional genes and thus participate in post-transcriptional regulation through the RNAi pathway <sup name="a2">[R2, ](#f2)</sup><sup name="a3">[R3, ](#f3)</sup><sup name="a4">[R4](#f4)</sup>. In the other hand, the exhaustive prediction of pseudogenes allow a better understanding of dynamic of gene evolution in multigenenic families often subjected to duplication and pseudogenisation events.
 
 The goal of PseudoGene REtriever (P-GRe [/pɛɡʁ/]) is to find the position of pseudogenes on a genome, as well as to infer their structures in pseudo-exons and pseudo-introns. P-GRe aims to be more user-friendly, with a limited number of dependencies, ease of use and total automaticity, while producing qualitative results and having greater sensitivity than other software with the same goal.
 
@@ -61,7 +61,7 @@ P-GRe works in two main stages, themselves divided into several sub-stages. The 
 (See the numbered sub-steps on black background on the top figure) Pseudogene structure inference is divided into three substeps:
 
 - **[1]** Hits that overlap, and whose overlap length is not divisible by 3, are considered frame-shift markers, because this can show that two parts of a protein sequence encoded by the same CDS are aligned in different reading frames. The presice position of the frame-shift is found by a so-called “chimera” approach. More information on this approach can be found [here](docs/figs/chimeras.md).
-- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process. More information on this "Lindley-inspired" process can be found [here]().
+- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process<sup name="a5">[R5](#f5)</sup>. More information on this "Lindley-inspired" process can be found [here](docs/figs.llp.md).
 - **[3]** The ends of the pseudogenes are refined by searching for a start codon and a stop codon. For start codons, P-GRe accepts "degenerate" start codons (*i.e.* which have a single substitution) provided that they are at a precise position upstream of the pseudogene. This position is determined from the alignment between the amino acid sequences encoded by the pseudogene and its parent gene.
 
 Installation
@@ -69,7 +69,7 @@ Installation
 
 At the time of P-GRe testing, these software/dependencies versions were used:
 
-### GFFRead 0.12.7
+### GFFRead 0.12.7<sup name="a6">[R6](#f6)</sup>
 
 [GFFRead](https://github.com/gpertea/gffread) can be downloaded from [here](https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz) and installed with `make`:
 ```
@@ -80,7 +80,7 @@ make
 ```
 <br>
 
-### BEDTools 2.30.0
+### BEDTools 2.30.0<sup name="a7">[R7](#f7)</sup>
 
 A precompiled version of [BEDTools](https://bedtools.readthedocs.io/en/latest/) binary can be downloaded from [here](https://github.com/arq5x/bedtools2/releases). Additionally, you should rename the binary file to simply "bedtools" so that P-GRe can work properly:
 ```
@@ -96,7 +96,7 @@ make
 ```
 <br>
 
-### NCBI BLAST+ 2.13.0+
+### NCBI BLAST+ 2.13.0+<sup name="a8">[R8](#f8)</sup>
 
 [NCBI BLAST+](https://www.ncbi.nlm.nih.gov/books/NBK279690/) latest version can be installed with:
 ```
@@ -109,7 +109,7 @@ tar -xvf ncbi-blast-2.13.0+-x64-linux.tar.gz
 ```
 <br>
 
-### BioPython 1.81
+### BioPython 1.81<sup name="a9">[R9](#f9)</sup>
 To install [BioPython](https://biopython.org/), you first need to install Python3 package manager with:
 ```
 sudo apt-get install python3-pip
@@ -120,7 +120,7 @@ sudo pip3 install biopython
 ```
 <br>
 
-### EMBOSS:6.6.0.0
+### EMBOSS:6.6.0.0<sup name="a10">[R10](#f10)</sup>
 [EMBOSS](https://emboss.sourceforge.net/) tool suite can be downloaded from EMBOSS FTP server (ftp://emboss.open-bio.org/pub/EMBOSS/). Once downloaded you will need to compile with `make`:
 ```
 wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
