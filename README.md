@@ -225,12 +225,6 @@ All source code contained in the `scripts` folder and the `P-GRe_pipeline.sh` fi
 
 References
 ==========
-dans text
-
-<sup name="a1">[R1](#f1)</sup>
-
-cit
-
 <b id="f1">[R1]</b> C. Sisu *et al*. Transcriptional activity and strain-specific history of mouse pseudogenes. *Nat Commun*. Vol. 11, 2020.[↩](#a1)
 
 <b id="f2">[R2]</b> O. H. Tam *et al*. Pseudogene-derived small interfering RNAs regulate gene expression in mouse oocytes. *Nature*. Vol. 453, pp. :534-538, 2008.[↩](#a2)
