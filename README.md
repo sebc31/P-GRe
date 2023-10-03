@@ -51,8 +51,7 @@ P-GRe works in two main stages, themselves divided into several sub-stages. The 
 (See the numbered sub-steps on black background on the top figure) Pseudogene structure inference is divided into three substeps:
 
 - **[1]** Hits that overlap, and whose overlap length is not divisible by 3, are considered frame-shift markers, because this can show that two parts of a protein sequence encoded by the same CDS are aligned in different reading frames. The presice position of the frame-shift is found by a so-called “chimera” approach. More information on this approach can be found [here](docs/figs/chimeras.md).
-- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci 
-(Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process.
+- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process. More information on this "Lindley-inspired" process can be found [here]().
 - **[3]** The ends of the pseudogenes are refined by searching for a start codon and a stop codon. For start codons, P-GRe accepts "degenerate" start codons (*i.e.* which have a single substitution) provided that they are at a precise position upstream of the pseudogene. This position is determined from the alignment between the amino acid sequences encoded by the pseudogene and its parent gene.
 
 Installation
@@ -60,16 +59,67 @@ Installation
 
 At the time of P-GRe testing, these software/dependencies versions were used:
 
-- GFFRead 0.12.7
+### GFFRead 0.12.7
+
+[GFFRead](https://github.com/gpertea/gffread) can be downloaded from [here](https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz) and installed with `make`:
+```
+wget https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz
+tar xzf gffread-0.12.7.Linux_x86_64.tar.gz
+cd gffread-0.12.7.Linux_x86_64
+make
+```
 <br>
 
-- BEDTools 2.30.0
+### BEDTools 2.30.0
+
+A precompiled version of [BEDTools](https://bedtools.readthedocs.io/en/latest/) binary can be downloaded from [here](https://github.com/arq5x/bedtools2/releases). Additionally, you should rename the binary file to simply "bedtools" so that P-GRe can work properly:
+```
+wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
+mv bedtools.static.binary bedtools
+```
+Alternatively, you can compile it from source:
+```
+wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools-2.30.0.tar.gz
+tar -zxvf bedtools-2.30.0.tar.gz
+cd bedtools2
+make
+```
 <br>
 
-- NCBI BLAST+ 2.13.0+
+### NCBI BLAST+ 2.13.0+
+
+[NCBI BLAST+](https://www.ncbi.nlm.nih.gov/books/NBK279690/) latest version can be installed with:
+```
+sudo apt-get install ncbi-blast+
+```
+Alternatively, you can download the 2.13.0+ version on which P-GRe was developed from [here](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.13.0/):
+```
+wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.13.0/ncbi-blast-2.13.0+-x64-linux.tar.gz
+tar -xvf ncbi-blast-2.13.0+-x64-linux.tar.gz
+```
 <br>
 
-- BioPython 1.81
+### BioPython 1.81
+To install [BioPython](https://biopython.org/), you first need to install Python3 package manager with:
+```
+sudo apt-get install python3-pip
+```
+You can then install BioPython by using the pip3 package manager:
+```
+sudo pip3 install biopython
+```
 <br>
 
-- EMBOSS:6.6.0.0
+### EMBOSS:6.6.0.0
+[EMBOSS](https://emboss.sourceforge.net/) tool suite can be downloaded from [this]( ftp://emboss.open-bio.org/pub/EMBOSS/) FTP server. Once downloaded you will need to compile with `make`:
+```
+wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+tar -xvf EMBOSS-6.6.0.tar.gz
+cd EMBOSS-6.6.0/
+./configure
+make
+```
+Binary files will be located in the `emboss` folder. This folder contains a lot of binary files, but only `stretcher` is used by P-GRe.
+
+### Other
+P-GRe requires a Linux-system and a Python3 installation. It is known to work with CentOs 7 distribution and Python 3.10.0 and 3.6.3 versions.
