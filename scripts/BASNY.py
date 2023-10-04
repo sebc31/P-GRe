@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-'''BLAST And Separate Next Inputs (BASNI) is '''
+'''BASNI filters the results obtained following local alignments of proteins on the hard-masked genome. It also contains
+some useful functions used by the main script.'''
 
 import collections
 import re
