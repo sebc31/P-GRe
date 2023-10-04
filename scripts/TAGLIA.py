@@ -99,10 +99,10 @@ def pepLengthFastRun(gff,prot_to_look,max_error_expected=0):
 #linldeyAlign perfoms a simplified Lindley process (Lindley, 1952) to remove introns from the pseudo-protein. This
 # allows for a soft filtering of introns. This (modified) Lindley process uses CDS length informations to only cumulate
 # local score when an intron is expected. A gap ("-") in the parent protein add 1 to local score, -1 if not.
-#Local score is also caped to five. More examples and explanations at the end of this script.
+#Local score is also caped to ten. More examples and explanations at the end of this script.
 def lindleyAlign(alignement,pep_len,error, log):
     ######DEV-TOOLS
-    maxLS=10
+    maxLS=10  #LS cap
     ######
     ##############################
     #STEP1. Computing Local Score#
