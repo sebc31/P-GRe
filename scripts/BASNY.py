@@ -205,6 +205,8 @@ for i in range(1,len(currentProtFiltered)):
     #The next two line stocks the result at the last iteration
     if i==len(currentProtFiltered)-1:
         if best_hit!="":results_to_keep.add(best_hit)
+if len(currentProtFiltered)==1: parents.add(currentProtFiltered[0][0])  #This case shouldn't happen but was added for exemple data
+
 if args.verbose: print("               >> Overlaping:    OK <<")
 
 ########################################################################################################################
