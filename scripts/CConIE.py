@@ -13,8 +13,8 @@ def chimer_construct(interval1,interval2,sequences,log):
     len_frame1=len(seqframe1)
     seqframe2=sequences[interval2[0]:interval2[1]+1].translate()
     len_frame2=len(seqframe2)
-    # The (theorical) protein that should be constructed if no frame-shift were found is constructed and its length is
-    # also computed. The difference between this theorical protein and the sum of the lengths of the two "half"-proteins
+    # The (theorical) protein that should be constructed if no frame-shift were found has its length is computed. The 
+    # difference between this theorical protein and the sum of the lengths of the two "half"-proteins
     # equals the length of the overlap between these two "half"-protein, and the frame shift is expected to take place
     # in this overlap, which is later called "conflict". This "conflict" subsequence is therefore the part of the
     # protein sequence where it's hard to determine when one ORF stop and another starts.
