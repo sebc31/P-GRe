@@ -537,7 +537,7 @@ for i in range(0, len(pseudogeneDic)-1):
         if i==len(pseudogeneDic)-2:
             pseudogeneChimerDic.append(pseudogeneDic[i+1])
 
-pseudogeneDic=pseudogeneChimerDic.copy()
+if len(pseudogeneDic)>1:pseudogeneDic=pseudogeneChimerDic.copy()  #If added for exemple data
 del pseudogeneChimerDic
 
 # Retreieving genomic sequence for newly merged chimeric pseudogenes
