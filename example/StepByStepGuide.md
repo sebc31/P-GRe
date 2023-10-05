@@ -58,13 +58,13 @@ AT1G11362        149 DELSTFKPNPQLFKDISIVKNLSIMGLVIVKLFLKK*-    185
 The similarity between these two sequences, and the absence of a stop codon in the sequence encoded by the pseudogene, could lead one to believe that P-GRe predicted a functional gene. To have more information on the structure of the pseudogene, the `pseudogenes.gff` file, in the `res` folder, can be checked.
 | Chromosome | Version | Type               | Strat | End |   | Sense | Frame | Attributes                                                               |
 |------------|---------|--------------------|-------|-----|---|-------|-------|--------------------------------------------------------------------------|
-| 1          | P_GRe   | pseudogene         | 151   | 714 | . | -     | .     | ID=pseudogene_1_151_714;Parent_gene=AT1G11362                            |
-| 1          | P_GRe   | pseudo_start_codon | 712   | 714 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_start_codon.1;Parent=pseudogene_1_151_714 |
-| 1          | P_GRe   | pseudo_CDS         | 151   | 156 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.1;Parent=pseudogene_1_151_714        |
-| 1          | P_GRe   | frame_shift        | 157   | 157 | . | -     | .     | ID=pseudogene_1_151_714.frame_shift.1;Parent=pseudogene_1_151_714        |
-| 1          | P_GRe   | pseudo_CDS         | 158   | 670 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.2;Parent=pseudogene_1_151_714        |
-| 1          | P_GRe   | frame_shift        | 671   | 672 | . | -     | .     | ID=pseudogene_1_151_714.frame_shift.2;Parent=pseudogene_1_151_714        |
-| 1          | P_GRe   | pseudo_CDS         | 673   | 714 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.3;Parent=pseudogene_1_151_714        |
-| 1          | P_GRe   | pseudo_stop_codon  | 151   | 153 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_stop_codon.1;Parent=pseudogene_1_151_714  |
+| 1          | P_GRe   | pseudogene         | 151   | 714 | . | -     | .     | ID=pseudogene_1_151_714; Parent_gene=AT1G11362                            |
+| 1          | P_GRe   | pseudo_start_codon | 712   | 714 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_start_codon.1; Parent=pseudogene_1_151_714 |
+| 1          | P_GRe   | pseudo_CDS         | 151   | 156 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.1; Parent=pseudogene_1_151_714        |
+| 1          | P_GRe   | frame_shift        | 157   | 157 | . | -     | .     | ID=pseudogene_1_151_714.frame_shift.1; Parent=pseudogene_1_151_714        |
+| 1          | P_GRe   | pseudo_CDS         | 158   | 670 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.2; Parent=pseudogene_1_151_714        |
+| 1          | P_GRe   | frame_shift        | 671   | 672 | . | -     | .     | ID=pseudogene_1_151_714.frame_shift.2; Parent=pseudogene_1_151_714        |
+| 1          | P_GRe   | pseudo_CDS         | 673   | 714 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_CDS1.3; Parent=pseudogene_1_151_714        |
+| 1          | P_GRe   | pseudo_stop_codon  | 151   | 153 | . | -     | .     | ID=pseudogene_1_151_714.pseudo_stop_codon.1; Parent=pseudogene_1_151_714  |
 
 As you can see, the single CDS is actually "broken" by two frame-shift events and divided into three sub-CDS: CDS1.1, CDS1.2 and CDS1.3. These frame-shift events most likely caused the loss of function of the pseudogene.
