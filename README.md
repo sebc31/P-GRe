@@ -20,7 +20,7 @@ Contents
 - [Contacts and authors](#contacts-and-authors)
 - [Funding and acknowledgements](#funding-and-acknowledgements)
 - [About P-GRe](#about-p-gre)
-- [Requirements and input](#requirments-and-input)
+- [Requirements and input](#requirements-and-input)
 - [How P-GRe works](#how-p-gre-works)
 - [Installation](#installation)
 - [Running P-GRe](#running-p-gre)
@@ -47,6 +47,7 @@ Requirements and input
 How P-GRe works
 ===============
 <p align="center"><img src="docs/figs/figure_article.jpg" width="50%" height="50%"></p>
+
 P-GRe works in two main stages, themselves divided into several sub-stages. The first main step is the search for the position of pseudogenes on the genome, and the second main step is the refinement of the structure of the pseudogenes found. From the information obtained in the second step, P-GRe can also [assign a type to each pseudogene](docs/figs/cat.md).
 
 ## Finding the pseudogenes
@@ -61,7 +62,7 @@ P-GRe works in two main stages, themselves divided into several sub-stages. The 
 (See the numbered sub-steps on black background on the top figure) Pseudogene structure inference is divided into three substeps:
 
 - **[1]** Hits that overlap, and whose overlap length is not divisible by 3, are considered frame-shift markers, because this can show that two parts of a protein sequence encoded by the same CDS are aligned in different reading frames. The presice position of the frame-shift is found by a so-called “chimera” approach. More information on this approach can be found [here](docs/figs/chimeras.md).
-- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process<sup name="a5">[R5](#f5)</sup>. More information on this "Lindley-inspired" process can be found [here](docs/figs.llp.md).
+- **[2]** The hits obtained may have the defect of not completely covering the (pseudo-)exons of the pseudogenes. To correct this, each hit obtained for a pseudogene is extended to the next hit and translated. Thus, a peptide sequence devoid of frame-shift is obtained, but retaining the introns. By aligning this sequence with the sequence of the protein encoded by the parent gene, extended gaps are expected at the introns loci (Note that an absence of gap marks the presence of a retropseudogene). The alignments obtained are corrected by a process inspired by the Lindley process<sup name="a5">[R5](#f5)</sup>. More information on this "Lindley-inspired" process can be found [here](docs/figs/llp.md).
 - **[3]** The ends of the pseudogenes are refined by searching for a start codon and a stop codon. For start codons, P-GRe accepts "degenerate" start codons (*i.e.* which have a single substitution) provided that they are at a precise position upstream of the pseudogene. This position is determined from the alignment between the amino acid sequences encoded by the pseudogene and its parent gene.
 
 
