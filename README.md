@@ -140,6 +140,7 @@ blastp
 gffread
 makeblastdb
 tblastn
+stretcher
 ```
 
 Running P-GRe
