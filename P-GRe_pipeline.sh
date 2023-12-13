@@ -136,6 +136,7 @@ if [ -f $PGRE_PATH/script/CConIE.py ]; then if [ $VERBOSE = true ]; then echo "C
 if [ -f $PGRE_PATH/script/PGRe.py ]; then if [ $VERBOSE = true ]; then echo "PGRe:          OK "$PGRE_PATH/script/PGRe.py; fi; else echo "P-GRe:         Error"; INSTAL_IS_OK=false; fi
 if [ -f $PGRE_PATH/script/TAGLIA.py ]; then if [ $VERBOSE = true ]; then echo "TAGLIA:        OK "$PGRE_PATH/script/TAGLIA.py; fi; else echo "TAGLIA:        Error"; INSTAL_IS_OK=false; fi
 if [ -f $PGRE_PATH/script/VITo.py ]; then if [ $VERBOSE = true ]; then echo "VITo:          OK "$PGRE_PATH/script/VITo.py; fi; else echo "VITo:          Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/script/PolyGet.py ]; then if [ $VERBOSE = true ]; then echo "PolyGet:       OK "$PGRE_PATH/script/PolyGet.py; fi; else echo "PolyGet:       Error"; INSTAL_IS_OK=false; fi
 if [ $INSTAL_IS_OK = false ]; then MissingScript; fi
 
 DEPENDENCIES_ARE_OK=true
