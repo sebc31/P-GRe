@@ -6,6 +6,7 @@ import CConIE
 import VITo
 import argparse
 import TAGLIA
+import PolyGet
 
 #Python utilities
 import collections
@@ -105,7 +106,9 @@ with open(args.wd+"/tmp/tblastn_results.tempfile.tsv") as blast_res:
             pseudogeneDic[line[1]]['chromosome']=line[0]
             pseudogeneDic[line[1]]['strand']=line[3]
             pseudogeneDic[line[1]]['parent'] = line[4]
-            parentDic[line[4]]=""
+            parentDic[line[4]] = {}
+            parentDic[line[4]]['sequence']=""
+            parentDic[line[4]]['CDS_nb'] = 0
             pseudogeneDic[line[1]]['intervals'] = []
             for hit in line[7].split(";"):
                 pseudogeneDic[line[1]]['intervals'].append(hit.split(":"))
@@ -117,6 +120,7 @@ with open(args.wd+"/tmp/tblastn_results.tempfile.tsv") as blast_res:
             pseudogeneDic[line[1]]['missing_N']=int(line[5])
             pseudogeneDic[line[1]]['missing_C']=int(line[6])
             pseudogeneDic[line[1]]['one_exon_only']=False
+            pseudogeneDic[line[1]]['structure_cons'] = []
             pseudogeneDic[line[1]]['real_position']=int(line[2])
 
 #These two lines add the attribute:
@@ -129,10 +133,28 @@ for sequence in list(Bio.SeqIO.parse(args.wd+"/tmp/first_pg_set.tempfile.fasta",
 #['parent_seq']=sequence of the protein coded by the parent gene
 for sequence in list(Bio.SeqIO.parse(args.fasta,'fasta')):
     if sequence.id in parentDic:
-        parentDic[sequence.id]=sequence.seq
+        parentDic[sequence.id]['sequence']=sequence.seq
 if args.verbose: print("               >> BLAST parsing: OK <<")
 if args.verbose: print("               >> PG generation: 0.00000% <<", end="")
 blosum62=substitution_matrices.load('BLOSUM62')
+
+#Next block retrieve the number of CDS for each parent. This is used to cheick CDS/intron loss
+with open(args.gff) as GFF:
+    attributes_to_look = ['Parent', 'Name']
+    with open(args.gff) as gff:
+        for line in gff:
+            if line[0] != "#":
+                line = line.split("\t")
+                attributes = line[8].split(";")
+                for attribute in attributes:
+                    parent_attribute = attribute.split("=")
+                    if parent_attribute[0] in attributes_to_look:
+                        if parent_attribute[1] in parentDic and line[2] == "CDS":
+                            parentDic[parent_attribute[1]]['CDS_nb'] += 1
+                        # In case of no results found, P-GRe tries to find a matching id by
+                        # removing informations about alternative transcripts
+                        elif parent_attribute[1].split(".")[0] in parentDic and line[2] == "CDS":
+                            parentDic[parent_attribute[1].split(".")[0]]['CDS_nb'] += 1
 
 ########################################################################################################################
 #################################################FRAME-SHIFT LOOKUP#####################################################
@@ -144,7 +166,7 @@ for pseudogene in pseudogeneDic:
         percent=str('{:.5f}'.format(percent))
     print("\r               >> PG generation: "+percent+"% <<", end="")
     sys.stdout.flush()
-    parent_prot=parentDic[pseudogeneDic[pseudogene]['parent']]
+    parent_prot=parentDic[pseudogeneDic[pseudogene]['parent']]['sequence']
     open(args.wd+"/tmp/last_parent.fasta","w").write(">last_parent\n"+str(parent_prot))
     #The two next blocks converts the sequence and coordinates if the pseudogene is located on the negative strand
     if pseudogeneDic[pseudogene]['strand']=="-":
@@ -255,7 +277,7 @@ for pseudogene in pseudogeneDic:
             stretch()
             for sequence in list(Bio.SeqIO.parse(args.wd + "/tmp/last_stretcher.fasta", 'fasta')):
                 alignement[0].append(str(sequence.seq))
-        pseudo_prot=TAGLIA.lindleyAlign(alignement,pep_len,error_expected_gap,log)
+        pseudo_prot, pseudogeneDic[pseudogene]['structure_cons'] = TAGLIA.lindleyAlign(alignement,pep_len,error_expected_gap,log)
         #The reconstitued pseudo-protein and the amino-acid dictionnary, where each amino acid is associated with
         #its genomic coordinates, are used to retrieve the exon/intron structures.
         interval_list=TAGLIA.alignToInterv(pseudo_prot,aa_dic)
@@ -358,7 +380,7 @@ for pseudogene in pseudogeneDic:
     #Before trying to find a start codon, TAGLIA checks if the first exon is missing from the pseudogene, which can
     #be due to many biological phenomenons (genetic recombination, template-switching during retrotranscription, etc)
     if (pseudogeneDic[pseudogene]['one_exon_only'] and aa_up<=50) or \
-       (not pseudogeneDic[pseudogene]['one_exon_only'] and not TAGLIA.checkFirstExon(alignement, pep_len[0])):
+       (not pseudogeneDic[pseudogene]['one_exon_only'] and not TAGLIA.checkFirstExon(alignement, pep_len[1])):
         aa=""
         i=0
         coordinates=[]
@@ -408,7 +430,7 @@ for pseudogene in pseudogeneDic:
     # where a stop codon is expected. If none is found, P-Gre will check the previous amino acid until a "*" is found.
     stop_found=False
     coordinates=[]
-    aa_down=len(parentDic[pseudogeneDic[pseudogene]['parent']])-pseudogeneDic[pseudogene]['missing_C']+1
+    aa_down=len(parentDic[pseudogeneDic[pseudogene]['parent']]['sequence'])-pseudogeneDic[pseudogene]['missing_C']+1
     title("c-ter reconstruction")
     log.write("Parent protein has "+str(aa_down)+" amino acids downstream.\n")
     #Before trying to find a stop codon, TAGLIA checks if the last exon is missing from the pseudogene, which can
@@ -439,6 +461,20 @@ for pseudogene in pseudogeneDic:
         else: log.write("Couldn't reconstruct C-ter\n\n")
     else: log.write("Couldn't reconstruct C-ter\n\n")
     log.flush()
+
+    ########################################################################################################################
+    ###################################################TYPE OF PG###########################################################
+    ########################################################################################################################
+
+    #Uses PolyGet to find pseudogene category
+    pseudogeneDic[pseudogene]['structure_cons'] = PolyGet.catergorizePG(pseudogeneDic, pseudogene, parentDic, interval_list, parent_prot)
+    #Uses PolyGet to find Poly-A site when the type of pseudogene is still Unknown.
+    if pseudogeneDic[pseudogene]['structure_cons'][1] == 'Unknown':
+        polyAstate = PolyGet.containsPolyA(pseudogeneDic[pseudogene]['sequence'][interval_list[-1][1]:-1])
+        if polyAstate == 'Found':
+            pseudogeneDic[pseudogene]['structure_cons'][1] = 'Retropseudogene'
+        elif polyAstate == 'Not found':
+            pseudogeneDic[pseudogene]['structure_cons'][1] = 'Duplicated pseudogene'
 
     ########################################################################################################################
     ###################################################SAVING RESULTS#######################################################
@@ -518,6 +554,7 @@ for i in range(0, len(pseudogeneDic)-1):
         new_tuple[1]['cds']+=pseudogeneDic[i+1][1]['cds']
         new_tuple[1]['parent']+=","+pseudogeneDic[i+1][1]['parent']
         new_tuple[1]['protein']+=pseudogeneDic[i+1][1]['protein']
+        new_tuple[1]['structure_cons']=['Fragments', 'Chimeric pseudogene', '']
         for intervals in pseudogeneDic[i+1][1]['intervals']:
             new_tuple[1]['intervals'].append(intervals)
         if new_tuple[1]['strand']!=pseudogeneDic[i+1][1]['strand']:new_tuple[1]['strand']="."
@@ -639,3 +676,11 @@ for tuple in pseudogeneDic:
                    tuple[1]['strand']+"\t.\tID=" + tuple[1]['id'] +".pseudo_stop_codon.1;Parent=" + tuple[1]['id']\
                    +"\n")
 if args.verbose: print("                                 OK "+args.wd+"/res/pseudogenes.gff <<")
+
+###PG type TSV
+file=open(args.wd+"/res/pseudogenes.info", "w")
+file.write("id\tcompletness\tPG_type\torigin\n")
+for tuple in pseudogeneDic:
+    file.write(tuple[1]['id'] + "\t" + tuple[1]['structure_cons'][0] + "\t" +\
+          tuple[1]['structure_cons'][1] + "\t" + tuple[1]['structure_cons'][2] + "\n")
+if args.verbose: print("                                 OK "+args.wd+"/res/pseudogenes.info <<")
