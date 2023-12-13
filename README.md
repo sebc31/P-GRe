@@ -69,7 +69,39 @@ P-GRe works in two main stages, themselves divided into several sub-stages. The 
 Installation
 ============
 
-At the time of P-GRe testing, these software/dependencies versions were used:
+### Full dependency installation script
+
+If you don't mind that some software is pre-compiled for Linux, after downloading P-GRe you can go to the `bin` folder and copy/paste the following commands to install all the dependencies:
+```
+# GFFread
+wget https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz
+tar xzf gffread-0.12.7.Linux_x86_64.tar.gz
+mv gffread-0.12.7.Linux_x86_64/gffread .
+rm -r gffread-0*
+# BEDtools
+wget https://github.com/arq5x/bedtools2/releases/download/v2.30.0/bedtools.static.binary
+mv bedtools.static.binary bedtools
+chmod 755 bedtools
+# NCBI Blast
+wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.13.0/ncbi-blast-2.13.0+-x64-linux.tar.gz
+tar -xvf ncbi-blast-2.13.0+-x64-linux.tar.gz
+mv ncbi-blast-2.13.0+/bin/* .
+rm -r ./ncbi-blast-*
+# BioPython
+sudo apt-get install python3-pip
+sudo pip3 install biopython
+# EMBOSS:6.6.0.0
+wget ftp://emboss.open-bio.org/pub/EMBOSS/EMBOSS-6.6.0.tar.gz
+tar -xvf EMBOSS-6.6.0.tar.gz
+cd EMBOSS-6.6.0
+./configure
+make
+cd ..
+cp EMBOSS-6.6.0/emboss/stretcher .
+rm EMBOSS-6.6.0.tar.gz
+```
+
+If you prefer to install the different dependencies one by one, you can follow the instructions below. At the time of P-GRe testing, these software/dependencies versions were used:
 
 ### GFFRead 0.12.7
 [GFFRead](https://github.com/gpertea/gffread)<sup name="a6">[R6](#f6)</sup> can be downloaded from [here](https://github.com/gpertea/gffread/releases/download/v0.12.7/gffread-0.12.7.Linux_x86_64.tar.gz) and installed with `make`:
@@ -130,7 +162,7 @@ cd EMBOSS-6.6.0/
 ./configure
 make
 ```
-Binary files will be located in the `emboss` folder. This folder contains a lot of binary files, but only `stretcher` is used by P-GRe.
+Binary files will be located in the `emboss` folder. This folder contains a lot of binary files. Only `stretcher` is used by P-GRe, but this binary file still needs other binaries to work. The best thing to do is to keep the EMBOSS folder in the `bin` folder, and copy `stretcher` to the `bin` folder.
 
 ### Other important informations
 P-GRe requires a Linux-system and a Python3 installation. It is known to work with CentOs 7 distribution and Python versions 3.10.0 and 3.6.3. It is currently not possible to specify the path to the binary files. **It is therefore essential to put these different files in the `bin` subfolder of the P-GRe installation folder**. This folder should contains at last the following binary files:
@@ -141,6 +173,7 @@ gffread
 makeblastdb
 tblastn
 stretcher
+EMBOSS-X.X.X (folder)
 ```
 
 Running P-GRe
