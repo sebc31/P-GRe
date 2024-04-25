@@ -82,7 +82,7 @@ MissingScript(){
   >&2 echo ""
   >&2 echo "Error: At least one of the P-GRe Python script is missing"
   >&2 echo "Please, check that all P-GRe scripts are located in the following directory:"
-  >&2 echo $PGRE_PATH/script/
+  >&2 echo $PGRE_PATH/scripts/
   >&2 echo "If this path isn't the one where P-GRe has been installed, you might be using a job-scheduled cluster to run P-GRe. In this case, you should provid the P-GRe_pipeline.sh directory with the -d option"
   exit 1
 }
@@ -131,12 +131,12 @@ if [ $VERBOSE = true ]; then
 
 INSTAL_IS_OK=true
 if [ $VERBOSE = true ]; then echo "Checking P-GRe installation..."; fi
-if [ -f $PGRE_PATH/script/BASNI.py ]; then if [ $VERBOSE = true ]; then echo "BASNI:         OK "$PGRE_PATH/script/BASNI.py; fi; else echo "BASNI:         Error"; INSTAL_IS_OK=false; fi
-if [ -f $PGRE_PATH/script/CConIE.py ]; then if [ $VERBOSE = true ]; then echo "CConIE:        OK "$PGRE_PATH/script/CConIE.py; fi; else echo "CConIE:        Error"; INSTAL_IS_OK=false; fi
-if [ -f $PGRE_PATH/script/PGRe.py ]; then if [ $VERBOSE = true ]; then echo "PGRe:          OK "$PGRE_PATH/script/PGRe.py; fi; else echo "P-GRe:         Error"; INSTAL_IS_OK=false; fi
-if [ -f $PGRE_PATH/script/TAGLIA.py ]; then if [ $VERBOSE = true ]; then echo "TAGLIA:        OK "$PGRE_PATH/script/TAGLIA.py; fi; else echo "TAGLIA:        Error"; INSTAL_IS_OK=false; fi
-if [ -f $PGRE_PATH/script/VITo.py ]; then if [ $VERBOSE = true ]; then echo "VITo:          OK "$PGRE_PATH/script/VITo.py; fi; else echo "VITo:          Error"; INSTAL_IS_OK=false; fi
-if [ -f $PGRE_PATH/script/PolyGet.py ]; then if [ $VERBOSE = true ]; then echo "PolyGet:       OK "$PGRE_PATH/script/PolyGet.py; fi; else echo "PolyGet:       Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/BASNI.py ]; then if [ $VERBOSE = true ]; then echo "BASNI:         OK "$PGRE_PATH/scripts/BASNI.py; fi; else echo "BASNI:         Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/CConIE.py ]; then if [ $VERBOSE = true ]; then echo "CConIE:        OK "$PGRE_PATH/scripts/CConIE.py; fi; else echo "CConIE:        Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/PGRe.py ]; then if [ $VERBOSE = true ]; then echo "PGRe:          OK "$PGRE_PATH/scripts/PGRe.py; fi; else echo "P-GRe:         Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/TAGLIA.py ]; then if [ $VERBOSE = true ]; then echo "TAGLIA:        OK "$PGRE_PATH/scripts/TAGLIA.py; fi; else echo "TAGLIA:        Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/VITo.py ]; then if [ $VERBOSE = true ]; then echo "VITo:          OK "$PGRE_PATH/scripts/VITo.py; fi; else echo "VITo:          Error"; INSTAL_IS_OK=false; fi
+if [ -f $PGRE_PATH/scripts/PolyGet.py ]; then if [ $VERBOSE = true ]; then echo "PolyGet:       OK "$PGRE_PATH/scripts/PolyGet.py; fi; else echo "PolyGet:       Error"; INSTAL_IS_OK=false; fi
 if [ $INSTAL_IS_OK = false ]; then MissingScript; fi
 
 DEPENDENCIES_ARE_OK=true
@@ -255,12 +255,12 @@ elif [ $VERBOSE = true ]; then
 #Filtering hits according to BASNI algorithm
 rm -f $OUTDIR/log/PGRe_BASNI_step.err
 if [ $VERBOSE = true ]; then echo "filtering hits:"; fi
-python $PGRE_PATH/script/BASNI.py -f $OUTDIR/data/$(basename $GENOME) -r $BLAST_RES -w $OUTDIR -v $VERBOSE 2>> $OUTDIR/log/PGRe_BASNI_step.err  #Redirecting stderr only
+python $PGRE_PATH/scripts/BASNI.py -f $OUTDIR/data/$(basename $GENOME) -r $BLAST_RES -w $OUTDIR -v $VERBOSE 2>> $OUTDIR/log/PGRe_BASNI_step.err  #Redirecting stderr only
 if [ ! $? -eq 0 ]; then echo "filtering hits:Error, check: "$OUTDIR"/log/PGRe_BASNI_step.err"; exit 1; fi
 
 #Reconstructing pseudogenes
 rm -f $OUTDIR/log/PGRe_pseudogene_construct_step.err
-python $PGRE_PATH/script/PGRe.py -f $PROTEOME -g $OUTDIR/data/$(basename $GFF) -s $OUTDIR/data/$(basename $GENOME) -w $OUTDIR -b $PGRE_PATH/bin -v $VERBOSE 2>> $OUTDIR/log/PGRe_pseudogene_construct_step.err  #Redirecting stderr only, PGRe.py will write other outputs in stdout/.log file
+python $PGRE_PATH/scripts/PGRe.py -f $PROTEOME -g $OUTDIR/data/$(basename $GFF) -s $OUTDIR/data/$(basename $GENOME) -w $OUTDIR -b $PGRE_PATH/bin -v $VERBOSE 2>> $OUTDIR/log/PGRe_pseudogene_construct_step.err  #Redirecting stderr only, PGRe.py will write other outputs in stdout/.log file
 if [ ! $? -eq 0 ]; then echo ""; echo "pg generation: Error, check: "$OUTDIR"/log/PGRe_pseudogene_construct_step.err"; exit 1; fi
 
 #Terminating
