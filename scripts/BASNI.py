@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-'''BASNI filters the results obtained following local alignments of proteins on the hard-masked genome. It also contains
-some useful functions used by the main script.'''
+'''BLAST And Separate Next Inputs (BASNI) is used to...'''
 
 import collections
 import re
@@ -39,11 +38,12 @@ def extendToMinMax(intervals1,intervals2):
     intervals1[1]=max(intervals1[1],intervals2[1])
     return intervals1
 
-def updateLen(currentProtFiltered,index):
-    longest_aln = currentProtFiltered[index][1]['spawn'][1]-currentProtFiltered[index][1]['spawn'][0]+1
+def updateEval(currentProtFiltered,index):
+    #best_eval = float(currentProtFiltered[index][1]['eval'])
+    best_eval = currentProtFiltered[index][1]['spawn'][1]-currentProtFiltered[index][1]['spawn'][0]+1
     best_hit = currentProtFiltered[index][0]
     current_conflict = currentProtFiltered[index][1]['spawn'][1]
-    return longest_aln, best_hit, current_conflict
+    return best_eval, best_hit, current_conflict
 
 ########################################################################################################################
 ########################################################TBLASTN#########################################################
@@ -58,16 +58,16 @@ def updateLen(currentProtFiltered,index):
 #into two smaller hits, precilsely separated at the frame-shift location. Undetected frame-shift are later corrected
 #by P-GRe.
 
+''' Old code for blasting via Python:
+cmd_tblastn = NcbitblastnCommandline(cmd=args.binary, query=args.fasta, out="./blast_res.blast", outfmt=6, db=db, evalue=0.01, word_size=3, gapextend=2, max_intron_length=100000)
+cmd_tblastn()'''
+
 ########################################################################################################################
 #################################################RESULTS PARSING########################################################
 ########################################################################################################################
 
-#First part of this script is dedicated to parse the output of the local alignments of the protein sequences against the
-#hard-masked genome.
-
-#currentProt variable will be used to gradually stock the results in a dictionnary with format:
-# currentProt[id]
-# This dictionnary contains a set of sub-dictionnaries, which are:
+#currentProt will be used to stock the results in a dictionnary with format:
+# churrentProt[id1]
 # [chr]=chromosome
 # [strand]=+|-
 # [eval]=E-value of the hits
@@ -78,9 +78,8 @@ def updateLen(currentProtFiltered,index):
 # [identity]=[% of identity of hit1, % of identity of hit2, % of identity of hit3,...]
 # For a protein "A" that aligns with two loci in the genome, keys (id) of this dictionnary are generated like:
 # A.1 for the first loci, A.2 for the second loci.
-
 currentProt=collections.defaultdict(dict)
-index_dic={}  # To generate unique identifier for each results
+index_dic={}  # To generate unique identifier
 current_query=""
 current_eval=None
 
@@ -90,28 +89,28 @@ with open(args.results) as blast:
         left = min(int(line[8]), int(line[9]))
         right = max(int(line[8]), int(line[9]))
         #If a protein found on a new line is the same as the last protein, on the same chromosome, with the same E-value
-        #, and are separated by 10 000 or less bases, its caracteristics are added to the last protein sub-dictionnary.
-        #In other words, they are considered as one unique result. Results with different E-value are also accepted if
-        #separated by 200 or less bases.
+        #, its caracteristics are added to the last protein sub-dictionnary
         if line[0]==current_query and current_chrom==line[1] and \
                 (Overlap(currentProt[id]['spawn'],[left-200,right+200])
                 or (line[10]==current_eval and Overlap(currentProt[id]['spawn'],[left-10000,right+10000]))):
+                #The same E-value should be given to every hit of a protein in a loci due to BLAST parameters.
+                #However, frame-shift can cause small overlap that prevent this. To avoid this, hits from the same
+                #proteins that overlaps are merged together. If E-value is equal to 0, every hits from the same protein
+                #in a chromosome will merge together. To avoid this, hits from the same protein having an E-value=0.0
+                #are simply merged together if they are separated by a distance < 10 kb
             currentProt[id]['identity'].append([float(line[2]),int(line[3])])
             currentProt[id]['hits'].append([left,right])
             currentProt[id]['total_align_length'] += int(line[3])
             currentProt[id]['spawn']=extendToMinMax(currentProt[id]['spawn'],[left,right])
             currentProt[id]['missing']=extendToMinMax(currentProt[id]['missing'],[int(line[6]),int(line[7])])
-        
         #Otherwise, a new sub-dictonnary is created
         else:
             #The next 3 lines generate a unique identifier
             if line[0] not in index_dic:index_dic[line[0]] = 1
             else:index_dic[line[0]] += 1
             id = line[0] + "." + str(index_dic[line[0]])
-            #The next 2 lines check the sense of the hit
             if int(line[8])>int(line[9]):strand="-"
             else:strand="+"
-            #The next lines add the result to the dictionnary
             currentProt[id]['chr'] = line[1]
             currentProt[id]['strand'] = strand
             currentProt[id]['hits'] = [[left,right]]
@@ -131,8 +130,9 @@ if args.verbose: print("               >> Parsing:       OK <<")
 ###############################################RESULTS FILTERING########################################################
 ########################################################################################################################
 
-#The next block retrieve the multi-hits having at least one hit with identity > threshold. The results are then sorted 
-#by chromosome, left position of the first hit and right position of the last hit ("spawn")
+#The next block retrieve the multi-hits having a total length > threshold and at least one hit with identity >
+# threshold. the results are then sorted by chromsome, left position of the first hit and right position of the
+# last hit ("spawn")
 currentProtFiltered=collections.defaultdict(dict)
 #Next lines are used to quickly modify the threshold equation, if needed (see next commentary block)
 left_id=75
@@ -154,6 +154,7 @@ for multi_hits in currentProt:
         #   left_id(ex:75.0)               ----------------------> right_id(ex:20.0)
         id_thresh=max((left_align-identity[1])/((left_id-right_id)/(right_align-left_align))\
                       +left_id,right_id)
+        #A minimum total length is still expected
         if identity[0]>=id_thresh:
             currentProtFiltered[multi_hits]=currentProt[multi_hits].copy()
             break
@@ -164,64 +165,61 @@ currentProtFiltered=sorted(currentProtFiltered.items(),key=lambda x: (x[1]['chr'
 #[(id1,currentProt[id1]),(id2,currentProt[id2]),...]. I chose not to reconstruct the dictionary structure.
 if args.verbose: print("               >> Filtering:     OK <<")
 
-###################################################################################################################
-################################################# OVERLAPS FILTERING ##############################################
-###################################################################################################################
-    
-'''The next block of code is used to compare a result with the next one to check if they overlap and to keep
-the longest one. The main difficulty is to identify and treat cases where many results overlap. To do so, 
-when a hit overlap the next one, instead of directly validating the longest hit, the script will check if
-another third hit overlap after the two first hits, and so on until no more overlaping hit is found. Only
-when no more overlaping hit are found is the longest hit added to the results.'''
-
-results_to_keep=set()
+#The next block iterates over the results to find overlaping results and keep the one with the lowest E-value.
+#Contrary to other pseudogene prediction softwares, P-Gre does not condier results that are separated by less than
+#XX bp to be overlapping. Considering all the hits of a protein on a loci permits to avoid this, moreover this might
+#make it impossible to detect chimeric retropseudogenes, as they have more than one parent gene and their hits needs
+#to be treated as separate results
+parents=set()
 best_hit=""
-longest_aln=0
+#best_eval=1.0
+best_eval=0
 current_conflict=0
-
 for i in range(1,len(currentProtFiltered)):
-    #While a results overlap the previous one, compare their length and stocks the best result in the 'best_hit'
+    #While a results overlap the previous one, compare the E-values and stocks the best result in the 'best_hit'
     #variable.
     if (currentProtFiltered[i-1][1]['spawn'][1]>=currentProtFiltered[i][1]['spawn'][0] or\
             current_conflict>=currentProtFiltered[i][1]['spawn'][0]) and currentProtFiltered[i-1][1]['chr']\
             ==currentProtFiltered[i][1]['chr']:
-        if currentProtFiltered[i-1][1]['spawn'][1]-currentProtFiltered[i-1][1]['spawn'][0]+1>longest_aln:
-            longest_aln, best_hit, current_conflict=updateLen(currentProtFiltered,i-1)
-        if currentProtFiltered[i][1]['spawn'][1] - currentProtFiltered[i][1]['spawn'][0] + 1 > longest_aln:
-            longest_aln, best_hit, current_conflict=updateLen(currentProtFiltered,i)
+        #if float(currentProtFiltered[i-1][1]['eval'])<best_eval:
+        if currentProtFiltered[i-1][1]['spawn'][1]-currentProtFiltered[i-1][1]['spawn'][0]+1>best_eval:
+            best_eval, best_hit, current_conflict=updateEval(currentProtFiltered,i-1)
+        #if float(currentProtFiltered[i][1]['eval'])<best_eval:
+        if currentProtFiltered[i][1]['spawn'][1] - currentProtFiltered[i][1]['spawn'][0] + 1 > best_eval:
+            best_eval, best_hit, current_conflict=updateEval(currentProtFiltered,i)
     else:
         #If the current result doesn't overlap the previous result and the previous result was being "compared" with
         #other overlapping results, stocks the best_hit from this previous comparison as a potential parent gene.
         if best_hit!="":
-            results_to_keep.add(best_hit)
+            parents.add(best_hit)
             best_hit=""
-            longest_aln=0
+            #best_eval=1.0
+            best_eval=0
             current_conflict=0
         #Otherwise, if the current result doesn't overlap the previous result and the previous result didn't olverap
         #any previous results, the previous hit is stocked as a potential parent gene, without being compared to any
-        #other hits.
+        # other hits.
         else:
-            results_to_keep.add(currentProtFiltered[i-1][0])
+            parents.add(currentProtFiltered[i-1][0])
     #The next two line stocks the result at the last iteration
     if i==len(currentProtFiltered)-1:
-        if best_hit!="":results_to_keep.add(best_hit)
-if len(currentProtFiltered)==1: parents.add(currentProtFiltered[0][0])  #This case shouldn't happen but was added for exemple data
+        if best_hit!="":parents.add(best_hit)
+if len(currentProtFiltered)==1: parents.add(currentProtFiltered[0][0])
 
 if args.verbose: print("               >> Overlaping:    OK <<")
-
+print(parents)
 ########################################################################################################################
 ###########################################RESULTS (~BED) WRITING#######################################################
 ########################################################################################################################
 
 #For every results in the filtered currentProt dictionnary (transformed into a list of tuples), retrieve only the ones
-#which have been noted in the results_to_keep set.
+#which have been noted as parent in the parents list.
 pseudogeneDict=collections.defaultdict(dict)
 chrDic=collections.defaultdict(dict)  # To quickly retrieve sequence from scaffold
 pseudogene_count=1
 for tuple in currentProtFiltered:
-    if tuple[0] in results_to_keep:
+    if tuple[0] in parents:
         tuple[1]['hits']=sorted(tuple[1]['hits'],key=lambda x: (x[0],x[1]))
-        #The next four lines are used to give an id to every pseudogenes
         zero=""
         for i in range(0,6-len(str(pseudogene_count))):
             zero+="0"
@@ -233,6 +231,7 @@ for tuple in currentProtFiltered:
             chrDic[tuple[1]['chr']]=[]
         chrDic[tuple[1]['chr']].append(tuple[1]['spawn'].copy())
         chrDic[tuple[1]['chr']][-1].append(id_pg)
+        ######
         pseudogeneDict[id_pg]['strand'] = tuple[1]['strand']
         pseudogeneDict[id_pg]['missing_N'] = tuple[1]['missing'][0]
         pseudogeneDict[id_pg]['missing_C'] = tuple[1]['missing'][1]
@@ -246,6 +245,7 @@ for tuple in currentProtFiltered:
         for hits in pseudogeneDict[id_pg]['hits']:
             hits[0]=hits[0]-pseudogeneDict[id_pg]['real_position']+pseudogeneDict[id_pg]['spawn'][0]
             hits[1]=hits[1]-pseudogeneDict[id_pg]['real_position']+pseudogeneDict[id_pg]['spawn'][0]
+        ######
         pseudogene_count+=1
 del currentProtFiltered
 
@@ -268,9 +268,6 @@ if args.verbose: print("               >> Writing TSV:   OK "+args.wd+"/tmp/tbla
 ################################################FASTA WRITING###########################################################
 ########################################################################################################################
 
-'''A new fasta file is written with every sequences where a pseudogene was found. This is done so that subsequent scripts
-do not have to look for information in the genome FASTA file, but in a much lighter file.'''
-
 file = open(args.wd+"/tmp/first_pg_set.tempfile.fasta", "w")
 for scaffold in list(Bio.SeqIO.parse(args.fasta,'fasta')):
     for hits in chrDic[scaffold.id]:
@@ -278,8 +275,8 @@ for scaffold in list(Bio.SeqIO.parse(args.fasta,'fasta')):
         #To work with Python, where first character in a string has an index of 0, 1 is substracted to every
         #hits found. As Python also exclude the right value in a list, 1 is added to the right value of a hit.
         #in the end, only the left value of the hit is substracted by 1. For P-GRe N-ter and C-ter reconstruction
-        #, sequences need to be flanked by a few bp, in which P-GRe will try to find a strat and stop codon, thus
-        #, it is necessary to substract and add ~150 bp upstream and downstream of the sequence.
+        #, sequences need to be flanked by at least 60 bp, in which P-GRe will try to find a strat and stop codon, thus
+        #, it is necessary to substract and add ~60 bp (150 bp) upstream and downstream of the sequence.
         if hits[0]-151>0: left_start=hits[0]-151
         else: left_start=0
         file.write(str(scaffold.seq[left_start:hits[1]+150])+"\n")
