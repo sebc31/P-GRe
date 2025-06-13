@@ -1,6 +1,4 @@
-# P-GRe v.0
-
-WORK IN PROGRESS ! Check later :-)
+# P-GRe v.0.2
 
 Contacts and authors
 ====================
@@ -15,7 +13,6 @@ Contents
 
 - [About P-GRe](#about-p-gre)
 - [Requirements and input](#requirements-and-input)
-- [How P-GRe works](#how-p-gre-works)
 - [Installation](#installation)
 - [Running P-GRe](#running-p-gre)
 - [Common problems](#common-problems)
@@ -24,34 +21,25 @@ Contents
 
 About P-GRe
 ===========
-Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. The goal of PseudoGene REtriever (P-GRe) is to find the position of pseudogenes on a genome, as well as to infer their structures in pseudo-CDSs. P-GRe aims to be more user-friendly, with a limited number of dependencies, ease of use and total automaticity, while producing qualitative results and having greater sensitivity than other software with the same goal.
+Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. The goal of PseudoGene REtriever (P-GRe) is to find the position of pseudogenes on a genome, as well as to infer their structures in pseudo-CDSs. P-GRe aims to be more user-friendly, with a limited number of dependencies, ease of use and total automaticity, while producing qualitative results and having greater sensitivity than other software with the same goal. P-GRe relies on miniprot to align user-provided protein sequences on the genome and then filter the overlapping results. P-GRe also categorizes all predictions into the three main categories of pseudogenes (unitary, duplicated or processed).
 
-Requirements and input
+Input requirements
 ======================
+P-GRe requires the genome in FASTA format and the structural annotation of the genes present on this genome, as well as the set of protein sequences encoded by these genes. Optionally, a second set of protein sequences from other organisms can be provided to increase the sensitivity and to annotate unitary pseudogenes. Input files must follow some common formatting rules: the genome and protein sequence sets must be in FASTA format, while the structural annotation must be in GFF3 format. This file must contain the "CDS" information in the type field (3rd column). More importantly, on CDS lines, the attributes field (9th column) must contain the predefined tag "Parent" and the value associated with this tag must be identical to the identifier of the corresponding sequence in the protein sequences FASTA file. This is necessary because P-GRe uses this tag to establish the correspondence between the structural annotation of each transcript and the corresponding protein sequence. Comparing the structure of the transcripts to those obtained on the pseudogenes then allows P-GRe to identify intron loss events, which is needed for the categorization of pseudogenes.
 
-
-
-How P-GRe works
-===============
-
-
-
-Installation
+Installation requirements
 ============
-
-
+P-GRe is designed to run on a Unix system and requires some dependencies. Before running P-GRe, make sure you have installed the following software: `bedtools` [(arq5x/bedtools2)](https://github.com/arq5x/bedtools2), `miniprot` [(lh3/miniprot)](https://github.com/lh3/miniprot) and `diamond` [(bbuchfink/diamond)](https://github.com/bbuchfink/diamond). P-GRe also requires a `python3` interpreter.
 
 Running P-GRe
 =============
 
 Common problems
 ===============
-
 To be added.
 
-Citing P-GRe and associated software
-====================================
-
+Citing P-GRe
+============
 To be added.
 
 Licence
