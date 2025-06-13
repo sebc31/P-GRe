@@ -32,10 +32,13 @@ P-GRe is designed to run on a Unix system and requires some dependencies. Before
 
 Running P-GRe
 =============
-To predict the structure of all pseudogenes in an organism's genome (`genome_A.fasta`) from that organism's protein sequences (`proteins_A.fasta`), a typical command line looks like this:
-`PGRe.sh -f genome_A.fasta -g genome_A_annotation.gff -p proteins_A.fasta`
+To predict the structure of all pseudogenes in an organism's genome (`genome_A.fasta`) from that organism's protein sequences (`proteins_A.fasta`), a typical command line is:<br/><br/>
+`PGRe.sh -f genome_A.fasta -g genome_A_annotation.gff -p proteins_A.fasta`<br/>
 
+To add a set of protein sequences from multiple organisms (`proteins_B.fasta`) to increase sensitivity and predict unitary pseudogenes, the typical command line would look like this:<br/><br/>
+`PGRe.sh -f genome_A.fasta -g genome_A_annotation.gff -p proteins_A.fasta -u proteins_B.fasta`<br/>
 
+Other options include multithreading and output directory options. The main output files are the structural annotation of the pseudogenes (`PGRe.gff`), and the sequences of peptides encoded by the predicted pseudogenes (`pseudogene_protein.fasta`).
 
 Citing P-GRe
 ============
