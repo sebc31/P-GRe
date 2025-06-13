@@ -14,8 +14,8 @@ Contents
 ========
 
 - [About P-GRe](#about-p-gre)
-- [Input requirements](#requirements-and-input)
-- [Installation requirements](#installation)
+- [Input requirements](#input-requirements)
+- [Installation requirements](#installation-requirements)
 - [Running P-GRe](#running-p-gre)
 - [Citing P-GRe and associated software](#citing-p-gre-and-associated-software)
 - [Licence](#licence)
