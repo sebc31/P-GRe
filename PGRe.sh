@@ -14,7 +14,6 @@ Help() {
   echo "       -g   path to the genome annotation, in GFF format"
   echo "       -p   path to the organism protein sequences, in FASTA format"
   echo "OPTIONAL ARGUMENTS"
-  echo "       -m   maximum overlap between pseudogenes [0.2]"
   echo "       -o   output directory. If none is given results will be written in the directory containing the genome to annotate [fasta]"
   echo "       -u   path to protein sequences from other organisms, used for unitary pseudogene predictions"
   echo "       -d   path to the directory containing the PGRe.sh script. This might be necessary if running P-GRe on a cluster [.]"
@@ -24,7 +23,7 @@ Help() {
 }
 
 #Set option variables
-GENOME=""; GFF=""; OUTDIR=""; PROTEOME=""; PGRE_PATH=$(dirname $(readlink -f "$0")); THREAD=1; PROTEOME2=""; COMMAND="PGRe.sh"; MAX_OVERLAP=0.2
+GENOME=""; GFF=""; OUTDIR=""; PROTEOME=""; PGRE_PATH=$(dirname $(readlink -f "$0")); THREAD=1; PROTEOME2=""; COMMAND="PGRe.sh"
 
 #Get the options
 while getopts "f:g:p:m:o:u:d:t:h" option; do
@@ -60,10 +59,6 @@ while getopts "f:g:p:m:o:u:d:t:h" option; do
       	exit
       fi;
       COMMAND+=" -p $PROTEOME";;
-      
-    m)#Retrieve maximum overlap value
-      MAX_OVERLAP=$OPTARG;
-      COMMAND+=" -m $MAX_OVERLAP";;
       
     u)#Retrieve second proteome
       PROTEOME2=$(readlink -f $OPTARG);
