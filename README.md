@@ -1,5 +1,7 @@
 # P-GRe v.0.2
 
+<p align="center"><img align="center" src="https://github.com/user-attachments/assets/8d1adf64-e01c-48d0-87ad-a5ec5ab09731" width="300"/></p><br/>
+
 Contacts and authors
 ====================
 Sébastien Cabanac, PhD student, sebastien.cabanac@univ-tlse3.fr
@@ -20,7 +22,7 @@ Contents
 
 About P-GRe
 ===========
-<img align="left" src="https://github.com/user-attachments/assets/8d1adf64-e01c-48d0-87ad-a5ec5ab09731" width="100" style="margin-right: 15px;"/> Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. The goal of PseudoGene REtriever (P-GRe) is to find the position of pseudogenes on a genome, as well as to infer their structures in pseudo-CDSs. P-GRe aims to be more user-friendly, with a limited number of dependencies, ease of use and total automaticity, while producing qualitative results and having greater sensitivity than other software with the same goal. P-GRe relies on miniprot to align user-provided protein sequences on the genome and then filter the overlapping results. P-GRe also categorizes all predictions into the three main categories of pseudogenes (unitary, duplicated or processed).
+Pseudogenes are genomic sequences with homology to functional genes but that harbor deleterious mutations, such as loss of the start codon, loss of coding sequence, gain of stop or frame-shifts. The goal of PseudoGene REtriever (P-GRe) is to find the position of pseudogenes on a genome, as well as to infer their structures in pseudo-CDSs. P-GRe aims to be more user-friendly, with a limited number of dependencies, ease of use and total automaticity, while producing qualitative results and having greater sensitivity than other software with the same goal. P-GRe relies on miniprot to align user-provided protein sequences on the genome and then filter the overlapping results. P-GRe also categorizes all predictions into the three main categories of pseudogenes (unitary, duplicated or processed).
 
 Input requirements
 ======================
@@ -43,6 +45,16 @@ Other options include multithreading and output directory options. The main outp
 Citing P-GRe
 ============
 To be added.
+
+Future implementation
+======================
+Future implementations are planned and include, among others:
+
+1. Greater control over alignment and filter parameters for users.
+
+2. Checking the input GFF file to verify its formatting before processing.
+
+3. The ability to add functional annotation of genes to statistically identify fading functions.
 
 Licence
 =======
