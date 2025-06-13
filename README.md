@@ -12,10 +12,9 @@ Contents
 ========
 
 - [About P-GRe](#about-p-gre)
-- [Requirements and input](#requirements-and-input)
-- [Installation](#installation)
+- [Input requirements](#requirements-and-input)
+- [Installation requirements](#installation)
 - [Running P-GRe](#running-p-gre)
-- [Common problems](#common-problems)
 - [Citing P-GRe and associated software](#citing-p-gre-and-associated-software)
 - [Licence](#licence)
 
@@ -33,10 +32,10 @@ P-GRe is designed to run on a Unix system and requires some dependencies. Before
 
 Running P-GRe
 =============
+To predict the structure of all pseudogenes in an organism's genome (`genome_A.fasta`) from that organism's protein sequences (`proteins_A.fasta`), a typical command line looks like this:
+`PGRe.sh -f genome_A.fasta -g genome_A_annotation.gff -p proteins_A.fasta`
 
-Common problems
-===============
-To be added.
+
 
 Citing P-GRe
 ============
