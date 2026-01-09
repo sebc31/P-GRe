@@ -27,6 +27,7 @@ with open(sys.argv[1]) as gff:
                             transcript_structure[value] = []
                             transcript_strand[value] = line[6]
                             tot[value] = 0
+                        break
                 if value == "":
                     print("ERROR in GFF file. Line " + str(count) + " has a CDS with no parent structure.")
                     exit(1)
@@ -65,3 +66,4 @@ for transcript in transcript_structure:
     for prot_part in transcript_structure[transcript]:
         print(prot_part[0],":",prot_part[1], end=";", sep="")
     print()
+
