@@ -163,7 +163,7 @@ echo -e "Done.\n\nInferring pseudogene types and writing output..."
 python3 $SCRIPTPATH/write_output.py $OUTDIR/in_op_full.id $OUTDIR/exp_struc.tsv $OUTDIR/miniprot_res_filtered.gff $OUTDIR > $OUTDIR/PGRe.unsorted.res
 sort --version-sort -k1,1 -k4,4 $OUTDIR/PGRe.unsorted.res > $OUTDIR/PGRe.gff
 
-python3 $SCRIPTPATH/getSeq.py $OUTDIR/PGRe.gff $OUTDIR/miniprot_res.gff > $OUTDIR/pseudogene_protein.fasta
+python3 $SCRIPTPATH/get_seq.py $OUTDIR/PGRe.gff $OUTDIR/miniprot_res.gff > $OUTDIR/pseudogene_protein.fasta
 
 #echo -e "Done.\n\nCleaning working directory..."
 mkdir -p $OUTDIR/tmp
