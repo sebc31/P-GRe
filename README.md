@@ -44,7 +44,7 @@ Other options include multithreading and output directory options. The main outp
 
 Citing P-GRe
 ============
-To be added.
+If you're using P-GRe, please cite: Cabanac *et al*. (2026), "P-GRe: An efficient pipeline for pseudogenes annotation", Genomics 118:2, https://doi.org/10.1016/j.ygeno.2026.111216
 
 Future implementation
 ======================
