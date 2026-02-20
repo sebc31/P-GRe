@@ -4,7 +4,7 @@ import math
 #ARGV
 #1 = GFF
 
-id_has_structure_name = True
+id_has_structure_name = False
 transcript_structure = {}
 transcript_strand = {}
 tot = {}
@@ -66,4 +66,5 @@ for transcript in transcript_structure:
     for prot_part in transcript_structure[transcript]:
         print(prot_part[0],":",prot_part[1], end=";", sep="")
     print()
+
 
