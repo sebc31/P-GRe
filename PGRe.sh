@@ -137,7 +137,7 @@ fi
 ##############################################################################################################################
 
 echo -e "\nRunning miniprot... This may take a few minutes."
-miniprot -L 15 -B 5 -J 25 -F 23 -I -t $THREAD -p 0.6 --outs 0.7 --outc 0.1 --gff --aln $OUTDIR/masked_genome.fasta $PROTEOME_FULL > $OUTDIR/miniprot_res.gff  #A. thaliana
+miniprot -L 15 -B 5 -J 25 -F 23 -I -t $THREAD -p 0.6 --outs 0.7 --outc 0.1 --gff --aln $OUTDIR/masked_genome.fasta $PROTEOME_FULL > $OUTDIR/miniprot_res.gff
 
 echo -e "Done.\n\nFiltering results... This may take a few minutes."
 python3 $SCRIPTPATH/overlap_filter.py $OUTDIR/miniprot_res.gff $OUTDIR/mrna_coordinates.bed $OUTDIR $OUTDIR/in_organism_prot.id
