@@ -40,12 +40,12 @@ with open(sys.argv[2]) as raw_mp:
             id = line.split("=")[1].split(";")[0]
             if id in pseudogene:
                 j += 1
-                print(j)
                 pseudogene.remove(id)
                 sequence_dic[id] = sequence
                 sequence = sub(r"[^a-zA-Z*]", "", sequence)
                 print(">" + id + "\n" + insertNewlines(sequence[3:]))
             else:
                 sequence = ""
+
 
 
