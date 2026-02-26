@@ -18,9 +18,9 @@ with open(sys.argv[1]) as gff:
                 left = int(line[3])
                 right = int(line[4])
 
-                if "protein_id=" in line:
+                if "protein_id=" in line[8]:
                     attribute_key_containing_protein_id = "protein_id"
-                elif "Parent=" in line:
+                elif "Parent=" in line[8]:
                     attribute_key_containing_protein_id = "Parent"
 
                 attributes = line[8].split(";")
@@ -72,5 +72,6 @@ for transcript in transcript_structure:
     for prot_part in transcript_structure[transcript]:
         print(prot_part[0],":",prot_part[1], end=";", sep="")
     print()
+
 
 
