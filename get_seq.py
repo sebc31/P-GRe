@@ -36,7 +36,7 @@ with open(sys.argv[2]) as raw_mp:
     for line in raw_mp:
         if line[0:5] == "##ATA":
             sequence = line
-        elif "mRNA" in line:
+        elif "mRNA" in line and line[0:2] != "##":
             id = line.split("=")[1].split(";")[0]
             if id in pseudogene:
                 j += 1
@@ -46,6 +46,7 @@ with open(sys.argv[2]) as raw_mp:
                 print(">" + id + "\n" + insertNewlines(sequence[3:]))
             else:
                 sequence = ""
+
 
 
 
