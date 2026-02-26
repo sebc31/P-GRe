@@ -17,10 +17,16 @@ with open(sys.argv[1]) as gff:
                 value = ""
                 left = int(line[3])
                 right = int(line[4])
+
+                if "protein_id=" in line:
+                    attribute_key_containing_protein_id = "protein_id"
+                elif "Parent=" in line:
+                    attribute_key_containing_protein_id = "Parent"
+
                 attributes = line[8].split(";")
                 for attribute in attributes:
                     key, value = attribute.split("=")
-                    if key == "Parent":
+                    if key == attribute_key_containing_protein_id:
                         if id_has_structure_name:
                             value = value.split(":")[1]
                         if value not in transcript_structure:
