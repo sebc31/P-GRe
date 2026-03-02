@@ -6,9 +6,10 @@
 
 
 echo -e "P-GRe pipeline v1.0\n\nP-GRe is a pipeline dedicated to the automatic detection and annotation of pseudogenes. If you are usign P-GRe, please cite:\n"
+echo -e "Cabanac et al. P-GRe: An efficient pipeline for pseudogenes annotation. 2026, Genomics, Volume 118, Issue 2."
 
 Help() {
-  echo "usage: PGRe.sh -f fasta -g gff -p proteins [-o output directory] [-u other proteins] [-d path to P-GRe] [-t thread]"
+  echo "usage: PGRe.sh -f fasta -g gff -p proteins [-o output directory] [-u other proteins] [-d path to P-GRe] [-A] [-t thread]"
   echo "MANDATORY ARGUMENTS"
   echo "       -f   path to the genome to annotate, in FASTA format"
   echo "       -g   path to the genome annotation, in GFF format"
@@ -17,16 +18,18 @@ Help() {
   echo "       -o   output directory. If none is given results will be written in the directory containing the genome to annotate [fasta]"
   echo "       -u   path to protein sequences from other organisms, used for unitary pseudogene predictions"
   echo "       -d   path to the directory containing the PGRe.sh script. This might be necessary if running P-GRe on a cluster [.]"
+  echo "       -A   if activated, P-GRe will look for poly(A) tail near uncategorized pseudogene to reclassify them as retropseudogenes"
+  echo "       -Q   if activated, P-GRe will filter out its predictions if they have no homology with the protein sequences"
   echo "       -t   number of threads to use for multi-threading [1]"
   echo "       -h   displays this help and exit"
   exit
 }
 
 #Set option variables
-GENOME=""; GFF=""; OUTDIR=""; PROTEOME=""; PGRE_PATH=$(dirname $(readlink -f "$0")); THREAD=1; PROTEOME2=""; COMMAND="PGRe.sh"
+GENOME=""; GFF=""; OUTDIR=""; PROTEOME=""; PGRE_PATH=$(dirname $(readlink -f "$0")); CHECK_POLYA=false; HQ_FILTER=false; THREAD=1; PROTEOME2=""; COMMAND="PGRe.sh"
 
 #Get the options
-while getopts "f:g:p:m:o:u:d:t:h" option; do
+while getopts "f:g:p:m:o:u:d:AQt:h" option; do
   case $option in
   
     h)#display help
@@ -75,6 +78,14 @@ while getopts "f:g:p:m:o:u:d:t:h" option; do
       	exit
       fi;
       COMMAND+=" -d $PGRE_PATH";;
+
+    A)#Optional poly(A) tail lookup
+      CHECK_POLYA=true;
+      COMMAND+=" -A";;
+
+    Q)#High-quality filter
+      HQ_FILTER=true;
+      COMMAND+=" -H";;
       
     t)#Retrieve number of threads
       THREAD=$OPTARG;
@@ -165,7 +176,35 @@ sort --version-sort -k1,1 -k4,4 $OUTDIR/PGRe.unsorted.res > $OUTDIR/PGRe.gff
 
 python3 $SCRIPTPATH/get_seq.py $OUTDIR/PGRe.gff $OUTDIR/miniprot_res.gff > $OUTDIR/pseudogene_protein.fasta
 
-#echo -e "Done.\n\nCleaning working directory..."
+##############################################################################################################################
+#### OPTIONAL OUTPUTS ########################################################################################################
+##############################################################################################################################
+
+# If high-quality filtering is activated
+if [ "$HQ_FILTER" = true ]
+	echo -e "Done.\n\nKeeping high-quality predictions only..."
+	then diamond makedb --in $PROTEOME_FULL -d $OUTDIR/check_quality.db -p $THREAD
+	diamond blastp -p $THREAD -k 1 -f 6 qseqid -d $OUTDIR/check_quality.db --query $OUTDIR/pseudogene_protein.fasta --out $OUTDIR/check_quality.res
+	python3 $SCRIPTPATH/filter_low_qual.py $OUTDIR/check_quality.res $OUTDIR/PGRe.gff $OUTDIR $OUTDIR/pseudogene_protein.fasta
+	mv $OUTDIR/PGRe.gff $OUTDIR/PGRe_w_low_qual.gff
+	mv $OUTDIR/pseudogene_protein.fasta $OUTDIR/pseudogene_protein_w_low_qual.fasta
+	mv $OUTDIR/PGRe_filtered.gff $OUTDIR/PGRe.gff
+	mv $OUTDIR/pseudogene_protein_filtered.fasta $OUTDIR/pseudogene_protein.fasta
+fi
+
+# If poly(A)-tail is activated
+if [ "$CHECK_POLYA" = true ]
+	then mv $OUTDIR/PGRe.gff $OUTDIR/PGRe_not_reclassified.gff
+	echo -e "Done.\n\nChecking for poly(A)-tails to classify uncategorized pseudogenes..."
+	awk '/^>/{if(l)print n"\t"l;n=substr($0,2);l=0;next}{l+=length}END{print n"\t"l}' $GENOME > $OUTDIR/scaffolds_length.tsv
+	python3 $SCRIPTPATH/rePolarizeGFF.py $OUTDIR/PGRe_not_reclassified.gff $OUTDIR/scaffolds_length.tsv > $OUTDIR/three_prime.bed
+	bedtools getfasta -fi $GENOME -fo $OUTDIR/three_prime.fasta -bed $OUTDIR/three_prime.bed -s -name
+	python3 $SCRIPTPATH/getPolyA.py $OUTDIR/three_prime.fasta > $OUTDIR/found_polyA_tail.tsv
+	echo -e "Found" $(wc -l $OUTDIR/found_polyA_tail.tsv | awk '{print $1}') "pseudogene associated poly(A)-tails."
+	python3 $SCRIPTPATH/reclassifyGFF.py $OUTDIR/PGRe_not_reclassified.gff $OUTDIR/found_polyA_tail.tsv > $OUTDIR/PGRe.gff
+fi
+
+echo -e "Done.\n\nCleaning working directory..."
 mkdir -p $OUTDIR/tmp
 mv $OUTDIR/* $OUTDIR/tmp 2>/dev/null
 mv $OUTDIR/tmp/PGRe.gff $OUTDIR/tmp/pseudogene_protein.fasta $OUTDIR 2>/dev/null
