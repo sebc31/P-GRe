@@ -1,4 +1,4 @@
-# P-GRe v.0.2
+# P-GRe v.1.0.0
 
 <p align="center"><img align="center" src="https://github.com/user-attachments/assets/8d1adf64-e01c-48d0-87ad-a5ec5ab09731" width="300"/></p><br/>
 
