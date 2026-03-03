@@ -9,6 +9,8 @@ def initAtt(attributes_string):
     for attribute in attributes:
         key, value = attribute.split("=")
         att_dic[key] = value
+        if key == "StopCodon":
+            att_dic[key] = int(value)
     return att_dic
 
 def initDic(dictionarry, chr, type, left, right, score, strand, frame, in_org_state, att_dic):
@@ -24,6 +26,7 @@ def initDic(dictionarry, chr, type, left, right, score, strand, frame, in_org_st
     dictionarry["in_org"] = in_org_state
     dictionarry["attributes"] = attributes
     dictionarry["Frameshift"] = "0"
+    dictionarry["StopCodon"] = 0
     for element in att_dic:
         dictionarry[element] = att_dic[element]
     return dictionarry
@@ -127,6 +130,8 @@ with open(sys.argv[3]) as mini:
                 cds_id = chr + "_" + left + "_" + right
                 covered_protein_part = att_dic["Target"].split(" ")
                 att_dic["Target"] = [int(covered_protein_part[1]), int(covered_protein_part[2])]
+                if "StopCodon" in att_dic:
+                    result[att_dic["Parent"]]["StopCodon"] += int(att_dic["StopCodon"])
                 result[att_dic["Parent"]]["CDS"][cds_id] = {}
                 result[att_dic["Parent"]]["CDS"][cds_id] = initDic(result[att_dic["Parent"]], chr, type, left, right, score, strand, frame, in_org, att_dic)
                 result[att_dic["Parent"]]["CDS"][cds_id]["covered_pos"] = set()
@@ -227,8 +232,7 @@ for pseudogene in result:
 
     ############ ONE LAST FILTER
     # This is made to filter predictions that were made from the second set of proteins. As this set can be extremly
-    # large, it can produced many short results. I don't think they are wrong, but its a truth the reviwers are not
-    # ready to accept! (just kidding)
+    # large, it can produced many short results.
     if not result[pseudogene]["in_org"]:
         size = result[pseudogene]["right"] - result[pseudogene]["left"] + 1
         if size < 150:
@@ -243,7 +247,8 @@ for pseudogene in result:
             attributes_string += "parent_gene=" + result[pseudogene]["Target"] + ";"
         attributes_string += "identity=" + result[pseudogene]["Identity"] + ";"
         attributes_string += "positive=" + result[pseudogene]["Positive"] + ";"
-        attributes_string += "frameshift=" + result[pseudogene]["Frameshift"]
+        attributes_string += "frameshift=" + result[pseudogene]["Frameshift"] + ";"
+        attributes_string += "StopCodon=" + str(result[pseudogene]["StopCodon"])
         gff_line.append(attributes_string)
         print("\t".join(gff_line))
 
