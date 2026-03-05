@@ -9,6 +9,7 @@ scaffold_upper_limit = {}
 with open(sys.argv[2]) as scaffold_length:
     for line in scaffold_length:
         scaffold, length = line.replace("\n", "").split("\t")
+        scaffold = scaffold.split(" ")[0].split("|")[0]
         scaffold_upper_limit[scaffold] = int(length) - 1  # -1 is just in case their is a +/- 1 error in the inputted GFF file.
 
 with open(sys.argv[1]) as gff:
