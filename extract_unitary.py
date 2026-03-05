@@ -12,10 +12,12 @@ with open(sys.argv[1]) as matching_query:
 
 with open(sys.argv[2]) as large_fasta:
     for line in large_fasta:
+        line = line.replace("\n", "")
         if line[0] == ">":
-            if line.replace("\n","").replace(">","").split()[0] in ids:
+            if line.replace(">","").split()[0] in ids:
                 write = True
+                print(line)
             else:
                 write = False
-        if write:
-            print(insertNewlines(line), end="")
+        elif write:
+            print(insertNewlines(line))
